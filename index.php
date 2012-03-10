@@ -1,3 +1,8 @@
+<?
+
+	require_once('db_connect.php');
+
+?>
 <html>
 <!-- James Ebentier -->
 <!-- Vincent Alindogan -->
@@ -11,3 +16,4 @@
   </form>
 </body>
 </html>
+<??>
