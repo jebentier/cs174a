@@ -4,3 +4,15 @@ CS174A Project
 
 In order to use the program you must load this project onto an active apache
 web server and load up the local index.
+
+
+VPN INSTRUCTIONS
+
+Everything to setup vpn is basically here:
+http://www.oit.ucsb.edu/network_services/vpn_service/
+
+I've been using this to do SQL stuff
+http://www.oracle.com/technetwork/developer-tools/sql-developer/overview/index.html
+
+Connection setup info:
+username/password@'(description=(address=(protocol=tcp)(host=uml.cs.ucsb.edu)(port=1521))(connect_data=(service_name=xexdb)))'
