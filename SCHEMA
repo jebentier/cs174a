@@ -1,0 +1,118 @@
+*************
+ENTITY TABLES
+*************
+
+CREATE TABLE users(
+  username  VARCHAR2(10) NOT NULL,
+  password  VARCHAR2(10) NOT NULL,
+  pin       VARCHAR2(4)  NOT NULL,
+  isManager VARCHAR2(1)  NOT NULL, // t or f
+  status    VARCHAR2(1)  NOT NULL, // t or f (active or suspended)
+  name      VARCHAR2(50) NOT NULL,
+  email     VARCHAR2(50) NOT NULL,
+  phone     VARCHAR2(10) NOT NULL,
+  CONSTRAINT user_unique UNIQUE (username, pin, email),
+  CONSTRAINT user_key    PRIMARY KEY (username)
+);
+
+/* Sample Insertion */
+INSERT INTO users
+(username, password, pin, isManager, status, name, email, phone)
+VALUES
+('admin', 'secret', '1000', 't', 't', 'John Admin', 'admin@stock.com', '8056374632');
+
+
+
+CREATE TABLE devices(
+  deviceID     VARCHAR2(10) NOT NULL,
+  name         VARCHAR2(30) NOT NULL,
+  year         NUMBER(4,0)  NOT NULL,
+  type         VARCHAR2(10) NOT NULL,
+  availability VARCHAR2(10) NOT NULL,
+  unit         VARCHAR2(10) NOT NULL,
+  cost         NUMBER(4,2)  NOT NULL,
+  overuse      NUMBER(4,2)  NOT NULL,
+  maxsingleuse NUMBER(3,0)  NOT NULL,
+  CONSTRAINT device_key     PRIMARY KEY (deviceID)
+);
+
+/* Sample Insertion */
+INSERT INTO devices
+(deviceID, name, year, type, availability, unit, cost, overuse, maxuse)
+VALUES
+('d2055n', 'HP LaserJet Printer', '2010', 'printer', 'available', 'pages', '0000.02', '0.0', '0')
+
+
+
+CREATE TABLE accounts(
+  accountID NUMBER(4,0) NOT NULL,
+  balance   NUMBER(4,2) NOT NULL,
+  status    VARCHAR(10) NOT NULL,
+  CONSTRAINT accounts_key   PRIMARY KEY (accountID)
+);
+
+/* Sample Insertion */
+INSERT INTO accounts
+(accountID, balance, status)
+VALUES
+('1022', '20.00', 'active')
+
+
+******************
+TRANSACTION TABLES
+******************
+
+CREATE TABLE user_accts(
+  username  VARCHAR2(10)  NOT NULL,
+  accountID NUMBER(4,0)   NOT NULL,
+  privilege VARCHAR(10)   NOT NULL,
+  FOREIGN KEY (username)  REFERENCES users(username),
+  FOREIGN KEY (accountID) REFERENCES accounts(accountID)
+);
+
+/* Sample Insertion */
+INSERT INTO user_accts
+(username, accountID, privilege)
+VALUES
+('admin', 1022, 'owner')
+
+CREATE TABLE acct_trans(
+  username  VARCHAR2(10)  NOT NULL,
+  accountID NUMBER(4,0)   NOT NULL,
+  datetime  DATE          NOT NULL,
+  type      VARCHAR2(200) NOT NULL,
+  FOREIGN KEY (username)  REFERENCES users(username),
+  FOREIGN KEY (accountID) REFERENCES accounts(accountID)
+);
+
+CREATE TABLE device_trans(
+  username    VARCHAR2(10) NOT NULL,
+  deviceID    VARCHAR2(10) NOT NULL,
+  resv_start  DATE         NOT NULL,
+  resv_end    DATE         NOT NULL,
+  use_start   DATE,
+  use_end     DATE,
+  FOREIGN KEY (username)   REFERENCES users(username),
+  FOREIGN KEY (deviceID)   REFERENCES devices(deviceID)
+);
+
+CREATE TABLE extensions(
+  username    VARCHAR2(10) NOT NULL,
+  deviceID    VARCHAR2(10) NOT NULL,
+  resv_end    DATE         NOT NULL,
+  FOREIGN KEY (username)   REFERENCES users(username),
+  FOREIGN KEY (deviceID)   REFERENCES devices(deviceID)
+);
+
+CREATE TABLE managers_devices(
+  username    VARCHAR2(10) NOT NULL,
+  deviceID    VARCHAR2(10) NOT NULL,
+  FOREIGN KEY (username)   REFERENCES users(username),
+  FOREIGN KEY (deviceID)   REFERENCES devices(deviceID)
+);
+
+/* Sample Insertion */
+INSERT INTO managers_devices
+(username, deviceID)
+VALUES
+('admin', 'd2055n')

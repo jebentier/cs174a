@@ -1,7 +1,6 @@
-<?
-
-	require_once('db_connect.php');
-
+<?php 
+  session_start(); 
+  session_destroy();
 ?>
 <html>
 <!-- James Ebentier -->
@@ -12,7 +11,7 @@
   <div class="index_container" style="width=500px;">
     <div class="login" style="float:left; padding-right:20px;">
       <h2>Login</h2>
-      <form action="#login" method="post">
+      <form action="main.php" method="post">
         <table>
           <tr><td style="text-align:right">
             <label for="username">Username: </label></td><td><input type="text" name="username" placeholder="jdoe" />
@@ -22,9 +21,9 @@
           </td></tr>
           <tr><td colspan=2 style="text-align:center; font-style:italic;">or</td></tr>
           <tr><td style="text-align:right">
-            <label for="username">Pin: </label></td><td><input type="text" name="pin" placeholder="0000" />
+            <label for="username">Pin: </label></td><td><input type="password" name="pin" placeholder="0000" />
           </td></tr>
-          <tr><td colspan=2 style="text-align:right;"><input type="submit" value="Login" /></td></tr>
+          <tr><td colspan=2 style="text-align:right;"><input type="submit"/></td></tr>
         </table>
       </form>
     </div>
