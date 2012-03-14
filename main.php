@@ -31,6 +31,10 @@
 			echo "Invalid credentials. <a href=\"index.php\">Go back to the login page.</a>";
 			exit(0);
 		}
+		if(strcmp($user['STATUS'], 'f') == 0){
+			echo "Your account has been suspended. <a href=\"index.php\">Go back to the login page.</a>";
+			exit(0);
+		}
 		$isManager = $user['ISMANAGER'];
 	}
 	else if($pin != NULL){
@@ -40,8 +44,10 @@
 			echo "Invalid credentials. <a href=\"index.php\">Go back to the login page.</a>";
 			exit(0);
 		}
-		$stid = getCredentials($pin);
-		$user = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
+		if(strcmp($user['STATUS'], 'f') == 0){
+			echo "Your account has been suspended. <a href=\"index.php\">Go back to the login page.</a>";
+			exit(0);
+		}
 		$username = $user['USERNAME'];
 		$password = $user['PASSWORD'];
 		$isManager = $user['ISMANAGER'];

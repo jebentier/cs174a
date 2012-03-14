@@ -23,17 +23,6 @@
 		return $stid;
 	}
 
-	/* Get user's full credentials if logged in with pin */
-	function getCredentials($pin){
-		global $conn;
-		$query = "SELECT username, status, isManager
-				  FROM   users
-				  WHERE  pin = '$pin'";
-		$stid = oci_parse($conn, $query);
-		oci_execute($stid);
-		return $stid;
-	}
-
 	/* Pulls list of accounts for a given user */
 	function getUserAccounts($username){
 		global $conn;
