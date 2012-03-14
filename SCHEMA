@@ -79,27 +79,45 @@ VALUES
 CREATE TABLE acct_trans(
   username  VARCHAR2(10)  NOT NULL,
   accountID NUMBER(4,0)   NOT NULL,
-  datetime  DATE          NOT NULL,
   type      VARCHAR2(200) NOT NULL,
+  m         NUMBER(2,0)   NOT NULL,
+  d         NUMBER(2,0)   NOT NULL,
+  y         NUMBER(4,0)   NOT NULL,
+  h         NUMBER(2,0)   NOT NULL,
   FOREIGN KEY (username)  REFERENCES users(username),
   FOREIGN KEY (accountID) REFERENCES accounts(accountID)
 );
 
 CREATE TABLE device_trans(
-  username    VARCHAR2(10) NOT NULL,
-  deviceID    VARCHAR2(10) NOT NULL,
-  resv_start  DATE         NOT NULL,
-  resv_end    DATE         NOT NULL,
-  use_start   DATE,
-  use_end     DATE,
+  username VARCHAR2(10) NOT NULL,
+  deviceID VARCHAR2(10) NOT NULL,
+  rs_m     NUMBER(2,0)  NOT NULL,
+  rs_d     NUMBER(2,0)  NOT NULL,
+  rs_y     NUMBER(4,0)  NOT NULL,
+  rs_h     NUMBER(2,0)  NOT NULL,
+  re_m     NUMBER(2,0)  NOT NULL,
+  re_d     NUMBER(2,0)  NOT NULL,
+  re_y     NUMBER(4,0)  NOT NULL,
+  re_h     NUMBER(2,0)  NOT NULL,
+  us_m     NUMBER(2,0),  
+  us_d     NUMBER(2,0),  
+  us_y     NUMBER(4,0),  
+  us_h     NUMBER(2,0),  
+  ue_m     NUMBER(2,0),  
+  ue_d     NUMBER(2,0),  
+  ue_y     NUMBER(4,0),  
+  ue_h     NUMBER(2,0),  
   FOREIGN KEY (username)   REFERENCES users(username),
   FOREIGN KEY (deviceID)   REFERENCES devices(deviceID)
 );
 
 CREATE TABLE extensions(
-  username    VARCHAR2(10) NOT NULL,
-  deviceID    VARCHAR2(10) NOT NULL,
-  resv_end    DATE         NOT NULL,
+  username VARCHAR2(10) NOT NULL,
+  deviceID VARCHAR2(10) NOT NULL,
+  re_m     NUMBER(2,0)  NOT NULL,
+  re_d     NUMBER(2,0)  NOT NULL,
+  re_y     NUMBER(4,0)  NOT NULL,
+  re_h     NUMBER(2,0)  NOT NULL,
   FOREIGN KEY (username)   REFERENCES users(username),
   FOREIGN KEY (deviceID)   REFERENCES devices(deviceID)
 );

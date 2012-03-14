@@ -21,7 +21,20 @@
           </td></tr>
           <tr><td colspan=2 style="text-align:center; font-style:italic;">or</td></tr>
           <tr><td style="text-align:right">
-            <label for="username">Pin: </label></td><td><input type="password" name="pin" placeholder="0000" />
+            <label for="pin">Pin: </label></td><td><input type="password" name="pin" placeholder="0000" />
+          </td></tr>
+          <tr><td colspan=2><hr/></td></tr>
+          <tr><td style="text-align:right">
+            <label for="month">Set Month: </label></td><td><input type="text" name="month" placeholder="12" />
+          </td></tr>
+          <tr><td style="text-align:right">
+            <label for="day">Set Day: </label></td><td><input type="text" name="day" placeholder="31" />
+          </td></tr>
+          <tr><td style="text-align:right">
+            <label for="year">Set Year: </label></td><td><input type="text" name="year" placeholder="2012" />
+          </td></tr>
+          <tr><td style="text-align:right">
+            <label for="hour">Set Hour: </label></td><td><input type="text" name="hour" placeholder="23" />
           </td></tr>
           <tr><td colspan=2 style="text-align:right;"><input type="submit"/></td></tr>
         </table>

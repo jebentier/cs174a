@@ -1,20 +1,29 @@
 <?php
 	include('includes/db_connect.php');
 	include('includes/user_functions.php');
-
 	session_start(); 
 	
-
-	/*** LOGIN VALIDATION ***/
-
+	// Set session variables
 	if(!isset($_SESSION['username'])) $_SESSION['username'] = $_POST['username'];
 	if(!isset($_SESSION['password'])) $_SESSION['password'] = $_POST['password'];
-	if(!isset($_SESSION['pin'])) $_SESSION['pin'] = $_POST['pin'];
+	if(!isset($_SESSION['pin']))      $_SESSION['pin']      = $_POST['pin'];
+	if(!isset($_SESSION['month'])) $_SESSION['month'] = $_POST['month'];
+	if(!isset($_SESSION['day']))   $_SESSION['day']   = $_POST['day'];
+	if(!isset($_SESSION['year']))  $_SESSION['year']  = $_POST['year'];
+	if(!isset($_SESSION['hour']))  $_SESSION['hour']  = $_POST['hour'];
 
+
+	// Load session variables
 	if(isset($_SESSION['username'])) $username = $_SESSION['username'];
 	if(isset($_SESSION['password'])) $password = $_SESSION['password'];
-	if(isset($_SESSION['pin'])) $pin = $_SESSION['pin'];
+	if(isset($_SESSION['pin']))      $pin      = $_SESSION['pin'];
+	if(isset($_SESSION['month'])) $month = $_SESSION['month'];
+	if(isset($_SESSION['day']))   $day   = $_SESSION['day'];
+	if(isset($_SESSION['year']))  $year  = $_SESSION['year'];
+	if(isset($_SESSION['hour']))  $hour  = $_SESSION['hour'];
 
+
+	/*** LOGIN VALIDATION ***/
 	if( ($username!=NULL) && ($password!=NULL) ){
 		$stid = login($username, $password);
 		$user = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
@@ -44,19 +53,21 @@
 		echo "Invalid credentials. <a href=\"index.php\">Go back to the login page.</a>";
 		exit(0);
 	}
-
 	if(!isset($_SESSION['isManager'])) $_SESSION['isManager'] = $isManager;
 
-	/*** HEADER ***/
 
+
+	/*** HEADER ***/
 	if(strcmp($isManager, 't') == 0){
 		echo "<div>Signed in as ".$username."</div>";
 		echo "<div class=\"header_links\"><a href=\"admin.php\">Manager Page</a>&nbsp;|&nbsp;";
 		echo "<a href=\"index.php\">Logout</a><br/><br/></div>";
+		echo "<div>System Date: ".$month."-".$day."-".$year."  Hour: ".$hour."</div>";
 	}
 	else{
 		echo "<div>Signed in as ".$username."</div>";
 		echo "<div class=\"header_links\"><a href=\"index.php\">Logout</a><br/><br/></div>";
+		echo "<div>System Date: ".$month."-".$day."-".$year." | Hour: ".$hour."</div>";
 	}
 	?>
 
@@ -64,7 +75,7 @@
 	<!--  ALL DEVICES LIST  -->
 	<table border="1">
 		<tr>
-    		<td colspan=11 style="text-align:center;"><h3>Device List</h3></td>
+    		<td colspan=12 style="text-align:center;"><h3>Device List</h3></td>
     	</tr>
 		<tr>
 			<th>Device ID</th>
@@ -77,6 +88,7 @@
 			<th>Max single use</th>
 			<th>Overuse cost</th>
 			<th>Device / Reservation Info</th>
+			<th>Quick Checkout</th>
 		</tr>
 		<?
 		$stid = getDeviceList();
@@ -92,8 +104,16 @@
         	echo "<td>" . $devices['MAXUSE'] . "</td>\n";
         	echo "<td>" . number_format($devices['OVERUSE'], 2, '.', '') . "</td>\n";
 
-        	if( strcmp($devices['AVAILABILITY'], 'available') == 0 )
-        		echo "<td><a href=\"device_info.php?deviceID=".$devices['DEVICEID']."\">Link</a></td>";
+        	if( strcmp($devices['AVAILABILITY'], 'no') != 0 )
+        		echo "<td style=\"text-align:center;\"><a href=\"device_info.php?deviceID=".$devices['DEVICEID']."\">Link</a></td>";
+        	else echo "<td></td>";
+
+        	if( strcmp($devices['AVAILABILITY'], 'available') == 0 ){
+        		echo "<form action=\"checkout.php?deviceID=".$devices['DEVICEID']."&action=quick\" method=\"post\">";
+        		echo "<td><input type=\"text\" name=\"accountID\" placeholder=\"Enter Account ID\" />";
+        		echo "<input type=\"submit\" value=\"Checkout\"/></td>";
+        		echo "</form>";
+        	}
         	else echo "<td></td>";
         	
     		echo "</tr>";
@@ -105,31 +125,28 @@
 	<form action="reserve.php" method="post">
     	<table border="1">
     		<tr>
-    	  		<td colspan=6 style="text-align:center;"><h3>Search Available Reservations Times (Unix Time Format)</h3></td>
+    	  		<td colspan=6 style="text-align:center;"><h3>Search Available Devices Within:</h3></td>
     	  	</tr>
     		<tr>
     			<th></th>
-    			<th>Hour</th>
-    			<th>Minute</th>
     			<th>Month</th>
     			<th>Day</th>
     			<th>Year</th>
+    			<th>Hour</th>
     		</tr>
     	  	<tr>
     	  		<td><label for="start">Reservation Start: </label></td>
-    	  		<td><input type="text" name="start_hour" placeholder="12" /></td>
-    	  		<td><input type="text" name="start_minute" placeholder="00" /></td>
     	  		<td><input type="text" name="start_month" placeholder="1" /></td>
     	  		<td><input type="text" name="start_day" placeholder="1" /></td>
     	  		<td><input type="text" name="start_year" placeholder="2012" /></td>
+    	  		<td><input type="text" name="start_hour" placeholder="12" /></td>
     	  	</tr>
     	  	<tr>
     	  		<td><label for="end">Reservation End: </label></td>
-    	  		<td><input type="text" name="end_hour" placeholder="12" /></td>
-    	  		<td><input type="text" name="end_minute" placeholder="00" /></td>
     	  		<td><input type="text" name="end_month" placeholder="12" /></td>
     	  		<td><input type="text" name="end_day" placeholder="31" /></td>
     	  		<td><input type="text" name="end_year" placeholder="2012" /></td>
+    	  		<td><input type="text" name="end_hour" placeholder="12" /></td>
     	  	</tr>
     	  	<tr>
     	  		<td colspan=6 style="text-align:right;"><input type="submit"/></td>
@@ -152,14 +169,14 @@
 		</tr>
 		<?
 		$stid = getCurrentReservations($username);
-		while ($devices = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
+		while ($a = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
     		echo "<tr>";
-        	echo "<td>" . $devices['DEVICEID'] . "</td>\n";
-        	echo "<td>" . $devices['RESV_START'] . "</td>\n";
-        	echo "<td>" . $devices['RESV_END'] . "</td>\n";
-
-        	if(strtotime("now") >= strtotime($devices['RESV_START'])) 
-        		echo "<td><a href=\"checkout.php?deviceID=".$devices['DEVICEID']."&action=reserve\">Return Device Link</a></td>";
+        	echo "<td>".$a['DEVICEID']."</td>\n";
+        	echo "<td>".$a['RS_M']."-".$a['RS_D']."-".$a['RS_Y']." : ".$a['RS_H']."</td>\n";
+        	echo "<td>".$a['RE_M']."-".$a['RE_D']."-".$a['RE_Y']." : ".$a['RE_H']."</td>\n";
+        	
+        	if(($a['RS_M']<=$month) && ($a['RS_D']<=$day) && ($a['RS_Y']<=$year) && ($a['RS_H']<=$hour)) 
+        		echo "<td><a href=\"checkout.php?deviceID=".$a['DEVICEID']."&action=reserve\">Checkout Link</a></td>";
         	else echo "<td></td>";
     		echo "</tr>";
 		}
@@ -180,13 +197,13 @@
 		</tr>
 		<?
 		$stid = getCheckoutDevices($username);
-		while ($devices = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
+		while ($a = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
     		echo "<tr>";
-        	echo "<td>" . $devices['DEVICEID'] . "</td>\n";
-        	echo "<td>" . $devices['RESV_START'] . "</td>\n";
-        	echo "<td>" . $devices['RESV_END'] . "</td>\n";
-        	echo "<td>" . $devices['USE_START'] . "</td>\n";
-        	echo "<td><a href=\"return.php?deviceID=".$devices['DEVICEID']."\">Return Device Link</a></td>";
+        	echo "<td>" . $a['DEVICEID'] . "</td>\n";
+        	echo "<td>".$a['RS_M']."-".$a['RS_D']."-".$a['RS_Y']." : ".$a['RS_H']."</td>\n";
+        	echo "<td>".$a['RE_M']."-".$a['RE_D']."-".$a['RE_Y']." : ".$a['RE_H']."</td>\n";
+        	echo "<td>".$a['US_M']."-".$a['US_D']."-".$a['US_Y']." : ".$a['US_H']."</td>\n";
+        	echo "<td><a href=\"returnA.php?deviceID=".$a['DEVICEID']."\">Return Device Link</a></td>";
     		echo "</tr>";
 		}
 		?>

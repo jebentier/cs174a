@@ -12,8 +12,8 @@
 	$day       = $_SESSION['day'];
 	$year      = $_SESSION['year'];
 	$hour      = $_SESSION['hour'];
-	$deviceID  = $_GET['deviceID'];
-	$action    = $_GET['action'];
+	$deviceID  = $_POST['deviceID'];
+	$action    = $_POST['action'];
 	$accountID = $_POST['accountID'];
 
 	if(strcmp($isManager, 't') == 0){
@@ -34,21 +34,8 @@
 		echo "<div>System Date: ".$month."-".$day."-".$year." | Hour: ".$hour."</div>";
 	}
 
-
-	if(strcmp($action, 'reserve') == 0){
-		if(checkoutDevice($deviceID, $username)){
-			echo "Succesful checkout. <a href=\"main.php\">Return Home</a>";
-		}
-		else echo "Error with checkout. <a href=\"main.php\">Return Home</a>";
+	if(returnDevice($deviceID, $username, $accountID)){
+		echo "Succesfully returned device. <a href=\"main.php\">Return Home</a>";
 	}
-	else if(strcmp($action, 'quick') == 0){
-		if($accountID == NULL){
-			echo "Error with checkout. <a href=\"main.php\">Return Home</a>";
-			exit(0);
-		}
-		if(quickCheckout($deviceID, $username, $accountID)){
-			echo "Succesful checkout. <a href=\"main.php\">Return Home</a>";
-		}
-		else echo "Error with checkout. <a href=\"main.php\">Return Home</a>";
-	}
+	else echo "Error: Not enough balance in the given account. <a href=\"main.php\">Return Home</a>";
 ?>
